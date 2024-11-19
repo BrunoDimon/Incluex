@@ -1,7 +1,7 @@
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import Home from './pages/Home';
 
-function App() {
+export default function App() {
   return (
     <div className="App">
       <Router>
@@ -11,6 +11,4 @@ function App() {
       </Router>
     </div>
   );
-}
-
-export default App;
+};

@@ -1,19 +1,17 @@
 import React, { useState } from "react";
+import Button from "./Button";
 
 export default function Table({ headers, data, pageNumber }) {
-    const [currentPage, setCurrentPage] = useState(1); // Página atual
-    const itemsPerPage = pageNumber; // Número de registros por página
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = pageNumber;
 
-    // Calcula os dados para a página atual
     const paginatedData = data.slice(
         (currentPage - 1) * itemsPerPage,
         currentPage * itemsPerPage
     );
 
-    // Total de páginas
     const totalPages = Math.ceil(data.length / itemsPerPage);
 
-    // Manipulador de mudança de página
     const changePage = (page) => {
         if (page > 0 && page <= totalPages) {
             setCurrentPage(page);
@@ -32,7 +30,7 @@ export default function Table({ headers, data, pageNumber }) {
                     <thead className="text-xs text-gray-700 uppercase bg-gray-400">
                         <tr>
                             {headers.map((header, index) => (
-                                <th key={index} className="px-6 py-3">
+                                <th key={index} className="px-4 py-2">
                                     {header}
                                 </th>
                             ))}
@@ -48,7 +46,7 @@ export default function Table({ headers, data, pageNumber }) {
                                 {row.map((cell, cellIndex) => (
                                     <td
                                         key={cellIndex}
-                                        className="px-6 py-4 text-gray-900 truncate max-w-xs"
+                                        className="px-4 py-2 text-gray-900 truncate max-w-xs"
                                     >
                                         {cell}
                                     </td>
@@ -59,24 +57,16 @@ export default function Table({ headers, data, pageNumber }) {
                 </table>
             </div>
             <div className="flex justify-between items-center mt-4">
-                <button
-                    onClick={() => changePage(currentPage - 1)}
-                    className="px-4 py-2 bg-blue-300 text-gray-700 rounded-md hover:bg-gray-300"
-                    disabled={currentPage === 1}
-                >
+                <Button onClick={() => changePage(currentPage - 1)} variant={currentPage === 1 ? 'disabled' : 'default'} disabled={currentPage === 1}>
                     Anterior
-                </button>
+                </Button>
                 <span>
                     Página {currentPage} de {totalPages}
                 </span>
-                <button
-                    onClick={() => changePage(currentPage + 1)}
-                    className="px-4 py-2 bg-blue-300 text-gray-700 rounded-md hover:bg-gray-300"
-                    disabled={currentPage === totalPages}
-                >
+                <Button onClick={() => changePage(currentPage + 1)} variant={currentPage === totalPages ? 'disabled' : 'default'} disabled={currentPage === totalPages}>
                     Próxima
-                </button>
+                </Button>
             </div>
-        </div>
+        </div >
     );
 }

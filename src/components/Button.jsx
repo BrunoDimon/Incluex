@@ -5,7 +5,7 @@ export default function Button({ children, variant = 'default', className, disab
     }
 
     return (
-        <button {...props} className={`px-3 py-1 rounded-md ${className} ${variantsClasses[variant]}`} disabled={disabled}>
+        <button type="button" {...props} className={`px-3 py-1 rounded-md ${className} ${variantsClasses[variant]}`} disabled={disabled}>
             {children}
         </button >
     )

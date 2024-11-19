@@ -1,6 +1,9 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import Table from '../components/Table';
 import FileUpload from '../components/FileUpload';
+import Button from '../components/Button';
+import { useNavigate } from 'react-router-dom';
+import { DataContext } from '../context/DataContext';
 
 export default function Home() {
     const [headers, setHeaders] = useState([]);
@@ -9,6 +12,31 @@ export default function Home() {
     const [dataInclusion, setDataInclusion] = useState([]);
     const [headersExclusion, setHeadersExclusion] = useState([]);
     const [dataExclusion, setDataExclusion] = useState([]);
+    /* const { headers, setHeaders, data, setData,
+        headersInclusion, setHeadersInclusion, dataInclusion, setDataInclusion,
+        headersExclusion, setHeadersExclusion, dataExclusion, setDataExclusion } = useContext(DataContext); */
+
+    const navigate = useNavigate();
+
+    const handleNavigate = () => {
+        const combinedData = mergeData(data, dataInclusion, dataExclusion);
+        navigate('/FinishedFile', { state: { headers, data: combinedData } });
+        window.scrollTo(0, 0);
+    }
+
+    const mergeData = (main, inclusion, exclusion) => {
+        const result = [...main];
+        inclusion.forEach(item => {
+            if (!result.some(row => JSON.stringify(row) === JSON.stringify(item))) {
+                result.push(item);
+            }
+        });
+        exclusion.forEach(item => {
+            const index = result.findIndex(row => JSON.stringify(row) === JSON.stringify(item));
+            if (index !== -1) result.splice(index, 1);
+        });
+        return result;
+    };
 
     const handleFileParsed = (parsedHeaders, parsedData, type) => {
         if (type === 'main') {
@@ -68,10 +96,10 @@ export default function Home() {
 
 
                 {data.length > 0 && headers.length > 0 &&
-                    dataInclusion.length > 0 && headersInclusion.length > 0 &
+                    dataInclusion.length > 0 && headersInclusion.length > 0 &&
                     dataExclusion.length > 0 && headersExclusion.length > 0 && (
-                        <div>
-                            <p>olá</p>
+                        <div className='w-full flex justify-center'>
+                            <Button onClick={handleNavigate()}>Gerar Arquivo</Button>
                         </div>
 
                     )}

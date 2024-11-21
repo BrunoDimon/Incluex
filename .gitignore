@@ -21,3 +21,6 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+dist/win-unpacked/SeuApp.exe
+dist/win-unpacked/resources/app.asar

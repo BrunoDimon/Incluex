@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { AiOutlineUpload, AiOutlineDelete } from 'react-icons/ai';
 
-export default function FileUpload({ onFileParsed, title, height, fileType }) {
+export default function FileUpload({ onFileParsed, title, height, fileName, UploadedFile }) {
     const [isDragging, setIsDragging] = useState(false);
-    const [isFileUploaded, setIsFileUploaded] = useState(false);
+    const [isFileUploaded, setIsFileUploaded] = useState(UploadedFile === "Yes");
 
     const handleFileUpload = (file) => {
         const reader = new FileReader();
@@ -78,7 +78,7 @@ export default function FileUpload({ onFileParsed, title, height, fileType }) {
                     >
                         <AiOutlineUpload className="text-5xl mb-4" />
                         <p className="text-lg font-semibold">
-                            Arraste ou Faça Upload do Arquivo {fileType}
+                            Arraste ou Faça Upload do Arquivo {fileName}
                         </p>
                         <input
                             id="file-upload"

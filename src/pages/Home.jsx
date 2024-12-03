@@ -133,12 +133,10 @@ export default function Home() {
                     )}
                 </div>
 
-                {isGenerateButtonVisibled && (
-                    <div className='w-full flex justify-center'>
-                        <Button onClick={handleNavigate}>Gerar Arquivo</Button>
-                    </div>
+                <div className='w-full flex justify-center'>
+                    <Button onClick={handleNavigate} variant={isGenerateButtonVisibled ? 'default' : 'disabled'} >Gerar Arquivo</Button>
+                </div>
 
-                )}
 
             </div>
         </div>

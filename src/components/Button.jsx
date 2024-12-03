@@ -1,11 +1,11 @@
-export default function Button({ children, variant = 'default', className, disabled, ...props }) {
+export default function Button({ children, variant = 'default', className, ...props }) {
     const variantsClasses = {
-        default: 'bg-blue-300 text-gray-900 hover:bg-blue-200',
-        disabled: 'bg-gray-300 text-gray-900'
+        default: 'bg-blue-500 text-white hover:bg-blue-700',
+        disabled: 'bg-blue-500 text-white opacity-50 cursor-not-allowed'
     }
 
     return (
-        <button type="button" {...props} className={`px-3 py-1 rounded-md ${className} ${variantsClasses[variant]}`} disabled={disabled}>
+        <button type="button" {...props} className={`px-3 py-1.5 rounded-md font-semibold ${className} ${variantsClasses[variant]}`}>
             {children}
         </button >
     )

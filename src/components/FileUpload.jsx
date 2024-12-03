@@ -49,11 +49,12 @@ export default function FileUpload({ onFileParsed, title, height, fileName, Uplo
         setIsDragging(false);
 
         const file = event.dataTransfer.files?.[0];
-        if (file && file.name.endsWith('.csv')) {
+        handleFileUpload(file);
+        /* if (file && file.name.endsWith('.csv')) {
             handleFileUpload(file);
         } else {
             alert('Por favor, arraste um arquivo válido do tipo .csv.');
-        }
+        } */
     };
 
     const handleFileDelete = () => {

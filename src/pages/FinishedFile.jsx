@@ -17,6 +17,17 @@ export default function FinishedFile() {
         setData(location.state?.data || storedData);
     }, [location.state]);
 
+    const handleEdit = (rowIndex) => {
+        const updateData = [...data];
+        updateData[rowIndex] = updateData;
+        setData(updateData);
+    };
+
+    const handleDelete = (rowIndex) => {
+        const updatedData = data.filter((_, index) => index !== rowIndex);
+        setData(updatedData);
+    };
+
     const downloadCSV = () => {
         const csvHeaders = headers.join(';');
         const csvRows = data.map(row => row.join(';')).join('\n');
@@ -35,7 +46,7 @@ export default function FinishedFile() {
                 <h1 className="text-2xl font-bold mb-4">Pré-visualização do Arquivo Final</h1>
                 {headers.length > 0 && data.length > 0 ? (
                     <div className="relative overflow-x-auto max-h-screen">
-                        <Table headers={headers} data={data} pageNumber={15} />
+                        <Table headers={headers} data={data} pageNumber={15} onEdit={handleEdit} onDelete={handleDelete} onFilter={true} />
                     </div>
                 ) : (
                     <div className="flex justify-center">

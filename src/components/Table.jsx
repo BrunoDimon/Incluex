@@ -1,13 +1,18 @@
-import React, { useState } from "react";
-import { AiOutlineEdit, AiOutlineDelete } from "react-icons/ai";
+import React, { useEffect, useState } from "react";
+import { AiOutlineEdit, AiOutlineDelete, AiOutlineCheckCircle } from "react-icons/ai";
 import Button from "./Button";
 
-export default function Table({ headers, data, pageNumber, onUpdateData, onEdit, onDelete, onFilter }) {
+export default function Table({ headers, data, pageNumber, onEdit, onDelete, onFilter }) {
     const [currentPage, setCurrentPage] = useState(1);
-    const [editableData, setEditableData] = useState([...data]);
+    const [editableData, setEditableData] = useState(data)
     const [editRowIndex, setEditRowIndex] = useState(null);
-    const itemsPerPage = pageNumber;
     const [filter, setFIlter] = useState("");
+
+    const itemsPerPage = pageNumber;
+
+    useEffect(() => {
+        setEditableData(data);
+    }, [data]);
 
     const filteredData = editableData.filter((row) =>
         row.some((cell) => cell.toLowerCase().includes(filter.toLowerCase()))
@@ -37,6 +42,12 @@ export default function Table({ headers, data, pageNumber, onUpdateData, onEdit,
         onEdit(editableData[rowIndex], rowIndex);
         setEditRowIndex(null);
     };
+
+    const deleteRow = (rowIndex) => {
+        const updateData = editableData.filter((_, index) => index !== rowIndex);
+        setEditableData(updateData);
+        onDelete(rowIndex);
+    }
 
     return (
         <div>
@@ -78,14 +89,14 @@ export default function Table({ headers, data, pageNumber, onUpdateData, onEdit,
                                 <td className={`px-4 py-2 flex space-x-2 sticky right-0 ${rowIndex % 2 === 0 ? "bg-gray-200" : "bg-gray-300"} `}>
                                     {editRowIndex === rowIndex ? (
                                         <button className="text-green-500 hover:text-green-700" onClick={() => saveEdit(rowIndex)}>
-                                            Salvar
+                                            <AiOutlineCheckCircle size={20} />
                                         </button>
                                     ) : (
                                         <button className="text-blue-500 hover:text-blue-700" onClick={() => setEditRowIndex(rowIndex)}>
                                             <AiOutlineEdit size={20} />
                                         </button>
                                     )}
-                                    <button className="text-red-500 hover:text-red-700" onClick={() => onDelete(rowIndex)}>
+                                    <button className="text-red-500 hover:text-red-700" onClick={() => deleteRow(rowIndex)}>
                                         <AiOutlineDelete size={20} />
                                     </button>
                                 </td>

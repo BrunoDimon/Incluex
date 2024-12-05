@@ -86,6 +86,17 @@ export default function Home() {
         }
     };
 
+    const handleEdit = (rowIndex) => {
+        const updateData = [...data];
+        updateData[rowIndex] = updateData;
+        setData(updateData);
+    };
+
+    const handleDelete = (rowIndex) => {
+        const updatedData = data.filter((_, index) => index !== rowIndex);
+        setData(updatedData);
+    };
+
     const isGenerateButtonVisibled =
         Array.isArray(data) &&
         data.length > 0 &&
@@ -108,7 +119,7 @@ export default function Home() {
                     />
                     {data.length > 0 && headers.length > 0 && (
                         <div className="relative overflow-x-auto max-h-96 mt-4">
-                            <Table headers={headers} data={data} pageNumber={4} />
+                            <Table headers={headers} data={data} pageNumber={4} onEdit={handleEdit} onDelete={handleDelete} />
                         </div>
                     )}
                 </div>
@@ -123,7 +134,7 @@ export default function Home() {
                     />
                     {dataInclusion.length > 0 && headersInclusion.length > 0 && (
                         <div className="relative overflow-x-auto max-h-96 mt-4">
-                            <Table headers={headersInclusion} data={dataInclusion} pageNumber={3} />
+                            <Table headers={headersInclusion} data={dataInclusion} pageNumber={3} onEdit={handleEdit} onDelete={handleDelete} />
                         </div>
                     )}
                 </div>
@@ -138,7 +149,7 @@ export default function Home() {
                     />
                     {dataExclusion.length > 0 && headersExclusion.length > 0 && (
                         <div className="relative overflow-x-auto max-h-96 mt-4">
-                            <Table headers={headersExclusion} data={dataExclusion} pageNumber={3} />
+                            <Table headers={headersExclusion} data={dataExclusion} pageNumber={3} onEdit={handleEdit} onDelete={handleDelete} />
                         </div>
                     )}
                 </div>

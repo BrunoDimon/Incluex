@@ -73,10 +73,7 @@ export default function FileUpload({ onFileParsed, title, height, fileName, Uplo
                     onDragLeave={handleDragLeave}
                     onDrop={handleDrop}
                 >
-                    <label
-                        htmlFor={`file-upload-${type}`}
-                        className="flex flex-col items-center justify-center cursor-pointer text-gray-500"
-                    >
+                    <label htmlFor={`file-upload-${type}`} className="flex flex-col items-center justify-center cursor-pointer text-gray-500">
                         <AiOutlineUpload className="text-5xl mb-4" />
                         <p className="text-lg font-semibold">
                             Arraste ou Faça Upload do Arquivo {fileName}
@@ -93,10 +90,7 @@ export default function FileUpload({ onFileParsed, title, height, fileName, Uplo
             ) : (
                 <div className="flex justify-between items-center">
                     <p className="font-semibold">{title}</p>
-                    <button
-                        onClick={handleFileDelete}
-                        className="text-red-500 hover:text-red-600"
-                    >
+                    <button onClick={handleFileDelete} className="text-red-500 hover:text-red-600">
                         <AiOutlineDelete className="text-2xl" />
                     </button>
                 </div>

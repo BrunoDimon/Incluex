@@ -17,15 +17,33 @@ export default function FinishedFile() {
         setData(location.state?.data || storedData);
     }, [location.state]);
 
-    const handleEdit = (rowIndex) => {
-        const updateData = [...data];
-        updateData[rowIndex] = updateData;
-        setData(updateData);
+
+    useEffect(() => {
+        console.log('alterou')
+        localStorage.setItem('finalHeaders', JSON.stringify(headers));
+        localStorage.setItem('finalData', JSON.stringify(data));
+    }, [headers], [data]);
+
+    const handleEdit = (updatedRow, rowIndex) => {
+        const updatedData = [...data];
+        updatedData[rowIndex] = updatedRow;
+        setData(updatedData);
     };
 
     const handleDelete = (rowIndex) => {
         const updatedData = data.filter((_, index) => index !== rowIndex);
         setData(updatedData);
+    };
+
+
+    const getTotal = () => {
+        const columnIndex = headers.indexOf('valor');
+        if (columnIndex === -1) return 0;
+
+        return data.reduce((sum, row) => {
+            const value = parseFloat(row[columnIndex]);
+            return sum + (isNaN(value) ? 0 : value);
+        });
     };
 
     const downloadCSV = () => {
@@ -47,6 +65,12 @@ export default function FinishedFile() {
                 {headers.length > 0 && data.length > 0 ? (
                     <div className="relative overflow-x-auto max-h-screen">
                         <Table headers={headers} data={data} pageNumber={15} onEdit={handleEdit} onDelete={handleDelete} onFilter={true} />
+                        <div className='mt-4'>
+                            <p className='text-lg font-semibold'>
+                                Total (valor): R$ {getTotal().toFixed(2)}
+                            </p>
+
+                        </div>
                     </div>
                 ) : (
                     <div className="flex justify-center">

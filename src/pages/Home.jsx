@@ -61,6 +61,13 @@ export default function Home() {
     };
 
     const handleFileParsed = (parsedHeaders, parsedData, type) => {
+        /* const validateHeaders = (newHeaders) => {
+            if (headers.length === 0) {
+                return true;
+            }
+            return JSON.stringify(headers) === JSON.stringify(newHeaders);
+        } */
+
         switch (type) {
             case 'main':
                 setHeaders(parsedHeaders);
@@ -92,11 +99,12 @@ export default function Home() {
             <div className="grid gap-3 grid-rows-1 w-full max-w-5xl">
                 <div className="bg-white shadow-lg rounded-2xl p-3 border border-gray-200">
                     <FileUpload
-                        onFileParsed={(headers, data) => handleFileParsed(headers, data, 'main')}
+                        onFileParsed={(headers, data) => handleFileParsed(headers, data, "main")}
                         title="Arquivo Principal!"
                         height="22rem"
                         fileName="Principal"
                         UploadedFile={data.length > 0 && headers.length > 0 ? "Yes" : "No"}
+                        type="main"
                     />
                     {data.length > 0 && headers.length > 0 && (
                         <div className="relative overflow-x-auto max-h-96 mt-4">
@@ -106,11 +114,12 @@ export default function Home() {
                 </div>
                 <div className="bg-white shadow-lg rounded-2xl p-3 border border-gray-200">
                     <FileUpload
-                        onFileParsed={(headers, data) => handleFileParsed(headers, data, 'inclusion')}
+                        onFileParsed={(headers, data) => handleFileParsed(headers, data, "inclusion")}
                         title="Arquivo de Inclusão!"
                         height="13rem"
                         fileName="de Inclusão"
                         UploadedFile={dataInclusion.length > 0 && headersInclusion.length > 0 ? "Yes" : "No"}
+                        type="inclusion"
                     />
                     {dataInclusion.length > 0 && headersInclusion.length > 0 && (
                         <div className="relative overflow-x-auto max-h-96 mt-4">
@@ -120,11 +129,12 @@ export default function Home() {
                 </div>
                 <div className="bg-white shadow-lg rounded-2xl p-3 border border-gray-200">
                     <FileUpload
-                        onFileParsed={(headers, data) => handleFileParsed(headers, data, 'exclusion')}
+                        onFileParsed={(headers, data) => handleFileParsed(headers, data, "exclusion")}
                         title="Arquivo de Exclusão!"
                         height="13rem"
                         fileName="de Exclusão"
                         UploadedFile={dataExclusion.length > 0 && headersExclusion.length > 0 ? "Yes" : "No"}
+                        type="exclusion"
                     />
                     {dataExclusion.length > 0 && headersExclusion.length > 0 && (
                         <div className="relative overflow-x-auto max-h-96 mt-4">

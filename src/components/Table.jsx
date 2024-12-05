@@ -38,18 +38,6 @@ export default function Table({ headers, data, pageNumber, onUpdateData, onEdit,
         setEditRowIndex(null);
     };
 
-
-    /* const handleEditCell = (rowIndex, cellIndex, value) => {
-        const updateData = [...editableData];
-        updateData[rowIndex][cellIndex] = value;
-        setEditableData(updateData);
-    };
-
-    const handleSave = () => {
-        onUpdateData(editableData);
-    }; */
-
-
     return (
         <div>
             {onFilter && (
@@ -87,7 +75,7 @@ export default function Table({ headers, data, pageNumber, onUpdateData, onEdit,
                                         )}
                                     </td>
                                 ))}
-                                <td className="px-4 py-2 flex space-x-2">
+                                <td className={`px-4 py-2 flex space-x-2 sticky right-0 ${rowIndex % 2 === 0 ? "bg-gray-200" : "bg-gray-300"} `}>
                                     {editRowIndex === rowIndex ? (
                                         <button className="text-green-500 hover:text-green-700" onClick={() => saveEdit(rowIndex)}>
                                             Salvar

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { AiOutlineUpload, AiOutlineDelete } from 'react-icons/ai';
 
-export default function FileUpload({ onFileParsed, title, height, fileName, UploadedFile }) {
+export default function FileUpload({ onFileParsed, title, height, fileName, UploadedFile, type }) {
     const [isDragging, setIsDragging] = useState(false);
     const [isFileUploaded, setIsFileUploaded] = useState(UploadedFile === "Yes");
 
@@ -10,7 +10,7 @@ export default function FileUpload({ onFileParsed, title, height, fileName, Uplo
         reader.onload = () => {
             const fileContent = reader.result;
             const parsedData = parseCSV(fileContent);
-            onFileParsed(parsedData.headers, parsedData.data);
+            onFileParsed(parsedData.headers, parsedData.data, type);
             setIsFileUploaded(true);
         };
         reader.onerror = () => {
@@ -59,7 +59,7 @@ export default function FileUpload({ onFileParsed, title, height, fileName, Uplo
 
     const handleFileDelete = () => {
         setIsFileUploaded(false);
-        onFileParsed([], []);
+        onFileParsed([], [], type);
     };
 
     return (
@@ -74,7 +74,7 @@ export default function FileUpload({ onFileParsed, title, height, fileName, Uplo
                     onDrop={handleDrop}
                 >
                     <label
-                        htmlFor="file-upload"
+                        htmlFor={`file-upload-${type}`}
                         className="flex flex-col items-center justify-center cursor-pointer text-gray-500"
                     >
                         <AiOutlineUpload className="text-5xl mb-4" />
@@ -82,7 +82,7 @@ export default function FileUpload({ onFileParsed, title, height, fileName, Uplo
                             Arraste ou Faça Upload do Arquivo {fileName}
                         </p>
                         <input
-                            id="file-upload"
+                            id={`file-upload-${type}`}
                             type="file"
                             accept=".csv"
                             onChange={handleInputChange}

@@ -3,107 +3,60 @@ import Table from '../components/Table';
 import FileUpload from '../components/FileUpload';
 import Button from '../components/Button';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { deleteRow, editRow, setExclusionFile, setFinalData, setInclusionFile, setMainFile } from '../store/fileSLice';
 
 export default function Home() {
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
-    const [headers, setHeaders] = useState(() => JSON.parse(localStorage.getItem('headers')) || []);
-    const [data, setData] = useState(() => JSON.parse(localStorage.getItem('data')) || []);
-    const [headersInclusion, setHeadersInclusion] = useState(() => JSON.parse(localStorage.getItem('headersInclusion')) || []);
-    const [dataInclusion, setDataInclusion] = useState(() => JSON.parse(localStorage.getItem('dataInclusion')) || []);
-    const [headersExclusion, setHeadersExclusion] = useState(() => JSON.parse(localStorage.getItem('headersExclusion')) || []);
-    const [dataExclusion, setDataExclusion] = useState(() => JSON.parse(localStorage.getItem('dataExclusion')) || []);
-
-    useEffect(() => {
-        localStorage.setItem('headers', JSON.stringify(headers));
-    }, [headers]);
-
-    useEffect(() => {
-        localStorage.setItem('data', JSON.stringify(data));
-    }, [data]);
-
-    useEffect(() => {
-        localStorage.setItem('headersInclusion', JSON.stringify(headersInclusion));
-    }, [headersInclusion]);
-
-    useEffect(() => {
-        localStorage.setItem('dataInclusion', JSON.stringify(dataInclusion));
-    }, [dataInclusion]);
-
-    useEffect(() => {
-        localStorage.setItem('headersExclusion', JSON.stringify(headersExclusion));
-    }, [headersExclusion]);
-
-    useEffect(() => {
-        localStorage.setItem('dataExclusion', JSON.stringify(dataExclusion));
-    }, [dataExclusion]);
-
-    const handleNavigate = () => {
-        const combinedData = mergeData(data, dataInclusion, dataExclusion);
-        localStorage.setItem('finalHeaders', JSON.stringify(headers));
-        localStorage.setItem('finalData', JSON.stringify(combinedData));
-        navigate('/FinishedFile', { state: { headers, data: combinedData } });
-        window.scrollTo(0, 0);
-    };
-
-    const mergeData = (main, inclusion, exclusion) => {
-        const result = [...main];
-        inclusion.forEach(item => {
-            if (!result.some(row => JSON.stringify(row) === JSON.stringify(item))) {
-                result.push(item);
-            }
-        });
-        exclusion.forEach(item => {
-            const index = result.findIndex(row => JSON.stringify(row) === JSON.stringify(item));
-            if (index !== -1) result.splice(index, 1);
-        });
-        return result;
-    };
+    const { main, inclusion, exclusion } = useSelector((state) => state.file);
 
     const handleFileParsed = (parsedHeaders, parsedData, type) => {
-        /* const validateHeaders = (newHeaders) => {
-            if (headers.length === 0) {
-                return true;
-            }
-            return JSON.stringify(headers) === JSON.stringify(newHeaders);
-        } */
-
         switch (type) {
             case 'main':
-                setHeaders(parsedHeaders);
-                setData(parsedData);
+                dispatch(setMainFile({ headers: parsedHeaders, data: parsedData }));
                 break;
             case 'inclusion':
-                setHeadersInclusion(parsedHeaders);
-                setDataInclusion(parsedData);
+                dispatch(setInclusionFile({ headers: parsedHeaders, data: parsedData }));
                 break;
             case 'exclusion':
-                setHeadersExclusion(parsedHeaders);
-                setDataExclusion(parsedData);
+                dispatch(setExclusionFile({ headers: parsedHeaders, data: parsedData }));
                 break;
             default:
-                console.error('Tipo de arquivo inválido:', type);
+                console.error('Tipo de arquivo inválido', type);
         }
     };
 
-    const handleEdit = (rowIndex) => {
-        const updateData = [...data];
-        updateData[rowIndex] = updateData;
-        setData(updateData);
+    const handleNavigate = () => {
+        const mergeData = (main = [], inclusion = [], exclusion = []) => {
+            const result = [...main];
+            inclusion.forEach(item => {
+                if (!result.some(row => JSON.stringify(row) === JSON.stringify(item))) {
+                    result.push(item);
+                }
+            });
+            exclusion.forEach(item => {
+                const index = result.findIndex(row => JSON.stringify(row) === JSON.stringify(item));
+                if (index !== -1) result.splice(index, 1);
+            });
+            return result;
+        };
+
+        const combinedData = mergeData(main.data, inclusion.data, exclusion.data);
+        dispatch(setFinalData({ headers: main.headers, data: combinedData }));
+        navigate('/FinishedFile');
     };
 
-    const handleDelete = (rowIndex) => {
-        const updatedData = data.filter((_, index) => index !== rowIndex);
-        setData(updatedData);
+    const handleEdit = (rowIndex, updatedRow, key) => {
+        dispatch(editRow({ rowIndex, updatedRow, key }));
     };
 
-    const isGenerateButtonVisibled =
-        Array.isArray(data) &&
-        data.length > 0 &&
-        (
-            (Array.isArray(dataInclusion) && dataInclusion.length > 0) ||
-            (Array.isArray(dataExclusion) && dataExclusion.length > 0)
-        );
+    const handleDelete = (rowIndex, key) => {
+        dispatch(deleteRow({ rowIndex, key }));
+    };
+
+    const isGenerateButtonVisibled = main.data.length > 0 && (inclusion.data.length > 0 || exclusion.data.length > 0);
 
     return (
         <div className="min-h-screen bg-gray-300 flex flex-col items-center justify-center">
@@ -112,14 +65,20 @@ export default function Home() {
                     <FileUpload
                         onFileParsed={(headers, data) => handleFileParsed(headers, data, "main")}
                         title="Arquivo Principal!"
-                        height="22rem"
+                        height="18rem"
                         fileName="Principal"
-                        UploadedFile={data.length > 0 && headers.length > 0 ? "Yes" : "No"}
+                        UploadedFile={main.data.length > 0 && main.headers.length > 0 ? "Yes" : "No"}
                         type="main"
                     />
-                    {data.length > 0 && headers.length > 0 && (
+                    {main.data.length > 0 && main.headers.length > 0 && (
                         <div className="relative overflow-x-auto max-h-96 mt-4">
-                            <Table headers={headers} data={data} pageNumber={4} onEdit={handleEdit} onDelete={handleDelete} />
+                            <Table
+                                headers={main.headers}
+                                data={main.data}
+                                pageNumber={4}
+                                onEdit={(rowIndex, updatedRow) => handleEdit(rowIndex, updatedRow, "main")}
+                                onDelete={(rowIndex) => handleDelete(rowIndex, "main")}
+                            />
                         </div>
                     )}
                 </div>
@@ -129,12 +88,18 @@ export default function Home() {
                         title="Arquivo de Inclusão!"
                         height="13rem"
                         fileName="de Inclusão"
-                        UploadedFile={dataInclusion.length > 0 && headersInclusion.length > 0 ? "Yes" : "No"}
+                        UploadedFile={inclusion.data.length > 0 && inclusion.headers.length > 0 ? "Yes" : "No"}
                         type="inclusion"
                     />
-                    {dataInclusion.length > 0 && headersInclusion.length > 0 && (
+                    {inclusion.data.length > 0 && inclusion.headers.length > 0 && (
                         <div className="relative overflow-x-auto max-h-96 mt-4">
-                            <Table headers={headersInclusion} data={dataInclusion} pageNumber={3} onEdit={handleEdit} onDelete={handleDelete} />
+                            <Table
+                                headers={inclusion.headers}
+                                data={inclusion.data}
+                                pageNumber={3}
+                                onEdit={(rowIndex, updatedRow) => handleEdit(rowIndex, updatedRow, "inclusion")}
+                                onDelete={(rowIndex) => handleDelete(rowIndex, "inclusion")}
+                            />
                         </div>
                     )}
                 </div>
@@ -144,12 +109,18 @@ export default function Home() {
                         title="Arquivo de Exclusão!"
                         height="13rem"
                         fileName="de Exclusão"
-                        UploadedFile={dataExclusion.length > 0 && headersExclusion.length > 0 ? "Yes" : "No"}
+                        UploadedFile={exclusion.data.length > 0 && exclusion.headers.length > 0 ? "Yes" : "No"}
                         type="exclusion"
                     />
-                    {dataExclusion.length > 0 && headersExclusion.length > 0 && (
+                    {exclusion.data.length > 0 && exclusion.headers.length > 0 && (
                         <div className="relative overflow-x-auto max-h-96 mt-4">
-                            <Table headers={headersExclusion} data={dataExclusion} pageNumber={3} onEdit={handleEdit} onDelete={handleDelete} />
+                            <Table
+                                headers={exclusion.headers}
+                                data={exclusion.data}
+                                pageNumber={3}
+                                onEdit={(rowIndex, updatedRow) => handleEdit(rowIndex, updatedRow, "exclusion")}
+                                onDelete={(rowIndex) => handleDelete(rowIndex, "exclusion")}
+                            />
                         </div>
                     )}
                 </div>

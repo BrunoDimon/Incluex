@@ -6,20 +6,20 @@ export default function Table({ headers, data, pageNumber, onEdit, onDelete, onF
     const [currentPage, setCurrentPage] = useState(1);
     const [editableData, setEditableData] = useState(data)
     const [editRowIndex, setEditRowIndex] = useState(null);
-    const [filter, setFIlter] = useState("");
-
-    const itemsPerPage = pageNumber;
-
-    useEffect(() => {
-        setEditableData(data);
-    }, [data]);
+    const [filter, setFilter] = useState("");
 
     const filteredData = editableData.filter((row) =>
         row.some((cell) => cell.toLowerCase().includes(filter.toLowerCase()))
     );
 
+    const itemsPerPage = pageNumber;
     const totalRecords = filteredData.length;
     const totalPages = Math.ceil(totalRecords / itemsPerPage);
+
+    useEffect(() => {
+        setEditableData(data);
+    }, [data]);
+
 
     const paginatedData = filteredData.slice(
         (currentPage - 1) * itemsPerPage,
@@ -33,13 +33,15 @@ export default function Table({ headers, data, pageNumber, onEdit, onDelete, onF
     };
 
     const handleInputChange = (e, rowIndex, colIndex) => {
-        const updateData = [...editableData];
-        updateData[rowIndex][colIndex] = e.target.value;
-        setEditableData(updateData);
+        const updatedRow = [...editableData[rowIndex]];
+        updatedRow[colIndex] = e.target.value;
+        const updatedData = [...editableData];
+        updatedData[rowIndex] = updatedRow;
+        setEditableData(updatedData);
+        onEdit(rowIndex, updatedRow);
     };
 
-    const saveEdit = (rowIndex) => {
-        onEdit(editableData[rowIndex], rowIndex);
+    const saveEdit = () => {
         setEditRowIndex(null);
     };
 
@@ -53,7 +55,7 @@ export default function Table({ headers, data, pageNumber, onEdit, onDelete, onF
         <div>
             {onFilter && (
                 <div className="bg-white relative overflow-x-auto max-w-5xl mx-auto shadow-lg rounded-lg">
-                    <input type="text" placeholder="Filtrar" value={filter} onChange={(e) => setFIlter(e.target.value)} className="w-full px-3 py-2 border rounded mb-4" />
+                    <input type="text" placeholder="Filtrar" value={filter} onChange={(e) => setFilter(e.target.value)} className="w-full px-3 py-2 border rounded mb-4" />
                 </div>
             )}
             <div className="bg-white relative overflow-x-auto max-w-5xl mx-auto shadow-lg rounded-lg

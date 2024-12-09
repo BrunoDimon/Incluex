@@ -66,7 +66,7 @@ export default function FileUpload({ onFileParsed, title, height, fileName, Uplo
         <div>
             {!isFileUploaded ? (
                 <div
-                    className={`flex flex-col items-center justify-center border-2 ${isDragging ? 'border-blue-500' : 'border-dashed border-gray-300'
+                    className={`flex flex-col items-center justify-cente border-2 ${isDragging ? 'border-blue-500' : 'border-dashed border-gray-300'
                         } rounded-lg`}
                     style={{ height }}
                     onDragOver={handleDragOver}
@@ -75,13 +75,13 @@ export default function FileUpload({ onFileParsed, title, height, fileName, Uplo
                 >
                     <label htmlFor={`file-upload-${type}`} className="flex flex-col items-center justify-center cursor-pointer text-gray-500">
                         <AiOutlineUpload className="text-5xl mb-4" />
-                        <p className="text-lg font-semibold">
+                        <p className="text-lg font-semibold m-2">
                             Arraste ou Faça Upload do Arquivo {fileName}
                         </p>
                         <input
                             id={`file-upload-${type}`}
                             type="file"
-                            accept=".csv"
+                            accept=".csv, .txt"
                             onChange={handleInputChange}
                             className="hidden"
                         />

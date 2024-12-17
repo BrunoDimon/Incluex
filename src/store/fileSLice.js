@@ -1,10 +1,33 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { v4 as uuidv4 } from 'uuid';
 
 const initialState = {
     main: { headers: [], data: [] },
     inclusion: { headers: [], data: [] },
     exclusion: { headers: [], data: [] },
     finalData: { headers: [], data: [] },
+};
+
+const mergeData = (main = [], inclusion = [], exclusion = []) => {
+    const arraysAreEqual = (arr1, arr2) => {
+        if (arr1.length !== arr2.length) return false;
+        return arr1.every((value, index) => value === arr2[index]);
+    };
+
+    const result = main.map(row => ({ id: uuidv4(), data: row }));
+
+    inclusion.forEach(item => {
+        if (!result.some(row => arraysAreEqual(row.data, item))) {
+            result.push({ id: uuidv4(), data: item });
+        }
+    });
+
+    exclusion.forEach(item => {
+        const index = result.findIndex(row => arraysAreEqual(row.data, item));
+        if (index !== -1) result.splice(index, 1);
+    });
+
+    return result;
 };
 
 const fileSlice = createSlice({
@@ -28,23 +51,27 @@ const fileSlice = createSlice({
             state.finalData.data = action.payload.data;
         },
         editRow: (state, action) => {
-            const { key, rowIndex, updatedRow } = action.payload;
+            const { key, id, updatedRow } = action.payload;
             if (state[key] && state[key].data) {
-                state[key].data = state[key].data.map((row, index) => index === rowIndex ? updatedRow : row);
-            } else {
-                console.error(`editRow: A chave '${key}' não existe ou não possui dados`)
+                state[key].data = state[key].data.map(row => row.id === id ? { ...row, data: updatedRow } : row);
             }
         },
         deleteRow: (state, action) => {
-            const { key, rowIndex } = action.payload;
+            const { key, id } = action.payload;
             if (state[key] && state[key].data) {
-                state[key].data = state[key].data.filter((_, index) => index !== rowIndex);
-            } else {
-                console.error(`deleteRow: A chave '${key}' não existe ou não possui dados`)
+                state[key].data = state[key].data.filter(row => row.id !== id);
             }
         },
     },
 });
 
-export const { setMainFile, setInclusionFile, setExclusionFile, setFinalData, editRow, deleteRow } = fileSlice.actions;
+export const {
+    setMainFile,
+    setInclusionFile,
+    setExclusionFile,
+    setFinalData,
+    editRow,
+    deleteRow
+} = fileSlice.actions;
+
 export default fileSlice.reducer;

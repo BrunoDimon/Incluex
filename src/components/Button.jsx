@@ -5,7 +5,7 @@ export default function Button({ children, variant = 'default', className, ...pr
     }
 
     return (
-        <button type="button" {...props} className={`px-3 py-1.5 rounded-md font-semibold ${className} ${variantsClasses[variant]}`}>
+        <button type="button" {...props} className={`px-3 py-1.5 rounded-md font-semibold shadow-md  ${className} ${variantsClasses[variant]}`}>
             {children}
         </button >
     )

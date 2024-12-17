@@ -50,11 +50,6 @@ export default function FileUpload({ onFileParsed, title, height, fileName, Uplo
 
         const file = event.dataTransfer.files?.[0];
         handleFileUpload(file);
-        /* if (file && file.name.endsWith('.csv')) {
-            handleFileUpload(file);
-        } else {
-            alert('Por favor, arraste um arquivo válido do tipo .csv.');
-        } */
     };
 
     const handleFileDelete = () => {
@@ -66,7 +61,7 @@ export default function FileUpload({ onFileParsed, title, height, fileName, Uplo
         <div>
             {!isFileUploaded ? (
                 <div
-                    className={`flex flex-col items-center justify-cente border-2 ${isDragging ? 'border-blue-500' : 'border-dashed border-gray-300'
+                    className={`flex flex-col items-center justify-center border-2 ${isDragging ? 'border-blue-500' : 'border-dashed border-gray-300'
                         } rounded-lg`}
                     style={{ height }}
                     onDragOver={handleDragOver}

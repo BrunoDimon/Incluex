@@ -60,7 +60,7 @@ export default function Home() {
 
     return (
         <div className="min-h-screen bg-gray-300 flex flex-col items-center justify-center">
-            <div className="grid grid-cols-1 gap-3 grid-rows-1 w-full max-w-5xl">
+            <div className="grid grid-cols-1 gap-2 grid-rows-1 w-full max-w-5xl">
                 <div className="bg-white shadow-lg rounded-2xl p-3">
                     <FileUpload
                         onFileParsed={(headers, data) => handleFileParsed(headers, data, "main")}

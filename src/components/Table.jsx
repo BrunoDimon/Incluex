@@ -64,7 +64,7 @@ export default function Table({ headers, data, pageNumber, onEdit, onDelete, onF
         <div>
             {onFilter && (
                 <div className="bg-white relative overflow-x-auto max-w-5xl mx-auto shadow-sm border rounded-lg mb-2">
-                    <input type="text" placeholder="Filtrar" value={filter} onChange={(e) => setFilter(e.target.value)} className="w-full px-3 py-2 rounded" />
+                    <input type="text" placeholder="Filtrar" value={filter} onChange={(e) => setFilter(e.target.value)} className="w-full px-3 py-2 rounded focus:outline-none " />
                 </div>
             )}
             <div className="bg-white relative overflow-x-auto max-w-5xl mx-auto shadow-md rounded-lg
